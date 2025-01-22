@@ -5,20 +5,19 @@ import { RxAvatar } from "react-icons/rx";
 import axios from "axios";
 import ValidationFormObject from "../../validation";
 
+
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [avatar, setAvatar] = useState(null);
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
 
   const handleFileSubmit = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const filePath = URL.createObjectURL(file);
-      console.log("File path:", filePath);
-      setAvatar(file);
+      setAvatar(file); // Set the selected file
     }
   };
 
@@ -44,7 +43,7 @@ const Signup = () => {
     }
 
     const newForm = new FormData();
-    newForm.append("file", avatar);
+    newForm.append("file", avatar); // Send file as "file"
     newForm.append("name", name);
     newForm.append("email", email);
     newForm.append("password", password);
@@ -56,14 +55,17 @@ const Signup = () => {
       },
     };
 
+    // Axios request to backend
+    axios
+      .post("http://localhost:8000/api/v2/user/create-user", newForm, config)
+      .then((res) => {
+        console.log(res.data); // Success response from server
+      })
+      .catch((err) => {
+        console.error(err.response ? err.response.data : err.message); // Error handling
+      });
+  };
 
-//axios request
-    axios.post("http://localhost:4000/api/v2/user/create-user", newForm, config).then((res)=>{
-      console.log(res.data);
-    }).catch((err)=>{
-      console.log(err);
-    })
-};
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -196,7 +198,7 @@ const Signup = () => {
 
             <div>
               <button
-                type="submit"
+                type="submit" onClick={handleSubmit}
                 className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
               >
                 Submit
